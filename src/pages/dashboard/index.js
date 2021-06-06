@@ -51,7 +51,9 @@ export default class Page {
 
     const sortableTable = new SortableTable(header, {
       url: `api/dashboard/bestsellers?_start=1&_end=20&from=${from.toISOString()}&to=${to.toISOString()}`,
-      isSortLocally: true
+      isSortLocally: true,
+      linkId: 'id',
+      linkUrl: '/products/'
     });
 
     const ordersChart = new ColumnChart({
@@ -143,9 +145,18 @@ export default class Page {
       this.updateChartsComponents(from, to);
       this.updateTableComponent(from, to);
     });
+    // document.addEventListener('click', this.handleClick);
+  }
+
+  handleClick = (event) => {
+    const element = event.target.closest('.sortable-table__row');
+    if (element) {
+      console.log(element);
+    }
   }
 
   destroy () {
+    // document.removeEventListener('click', this.handleClick);
     for (const component of Object.values(this.components)) {
       component.destroy();
     }

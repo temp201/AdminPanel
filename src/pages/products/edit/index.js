@@ -1,18 +1,29 @@
+import ProductForm from "../../../components/product-form";
+
 export default class Page {
   element;
   subElements = {};
   components = {};
 
+  constructor() {
+    this.productId = window.location.pathname.split('/').reverse()[0];
+    this.render();
+  }
+
   async render() {
+    console.log(this.productId);
     const element = document.createElement('div');
 
-    element.innerHTML = `
-      <div>
-        <h1>Edit page</h1>
-      </div>`;
+    this.form = new ProductForm(this.productId);
 
-    this.element = element.firstElementChild;
+    this.element = await this.form.render();
 
     return this.element;
+  }
+
+  destroy() {
+    this.element.remove();
+    this.form.destroy();
+    this.form = null;
   }
 }
