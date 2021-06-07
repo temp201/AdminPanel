@@ -31,9 +31,19 @@ export default class SalesPage {
     this.components.push(picker);
     this.subElements.topPanel.append(picker.element);
 
-    const table = new SortableTable(header, {url: '/api/rest/orders', sorted: {id: 'createdAt', order: 'desc'}});
+    const table = new SortableTable(header, {url: '/api/rest/orders', sorted: {id: 'createdAt', order: 'desc'}, filter: {createdAt_gte: this.from.toISOString(), createdAt_lte: this.to.toISOString()}});
     this.components.push(table);
     this.subElements.salesContainer.append(table.element);
+
+    this.element.addEventListener('date-select', event => {
+      this.from = event.detail.from;
+      this.to = event.detail.to;
+      this.components.forEach(component => {
+        if (component['changeFilter']) {
+          component.changeFilter({createdAt_gte: this.from.toISOString(), createdAt_lte: this.to.toISOString()});
+        }
+      });
+    });
 
     return this.element;
     
@@ -51,6 +61,7 @@ export default class SalesPage {
 
   remove() {
     this.components.forEach(component => component.destroy());  
+    this.components = null;
     if (this.element) {
       this.element.remove();
       this.element = null;

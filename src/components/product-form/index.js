@@ -191,6 +191,7 @@ export default class ProductForm {
 
     this.element = element.firstElementChild;
     this.subElements = this.getSubElements(element);
+    // console.log(this.subElements)
   }
 
   getEmptyTemplate() {
@@ -251,6 +252,7 @@ export default class ProductForm {
 
   setFormData() {
     const {productForm} = this.subElements;
+    // console.log(productForm);
     const excludedFields = ['images'];
     const fields = Object.keys(this.defaultFormData).filter(item => !excludedFields.includes(item));
 

@@ -3,7 +3,6 @@ import fetchJson from "../../utils/fetch-json.js";
 const BACKEND_URL = 'https://course-js.javascript.ru';
 
 export default class SortableTable {
-  element;
   subElements = {};
   data = [];
   loading = false;
@@ -71,6 +70,7 @@ export default class SortableTable {
     end = start + step,
     linkId = '',
     linkUrl = '',
+    filter
   } = {}) {
 
     this.headersConfig = headersConfig;
@@ -82,7 +82,8 @@ export default class SortableTable {
     this.end = end;
     this.linkId = linkId;
     this.linkUrl = linkUrl;
-
+    this.filter = filter;
+    console.log(this.period);
     this.render();
   }
 
@@ -103,11 +104,29 @@ export default class SortableTable {
     this.initEventListeners();
   }
 
-  async loadData(id, order, start = this.start, end = this.end) {
+  async changeFilter(filter) {
+    if (this.filter) {
+      for (const key of Object.keys(this.filter)) {
+        this.url.searchParams.delete(key);
+      }
+    }
+    this.filter = filter;
+    this.start = 1;
+    this.end = this.start + this.step;
+    const data = await this.loadData();
+    this.addRows(data);
+  }
+
+  async loadData(id = this.sorted.id, order = this.sorted.order, start = this.start, end = this.end) {
     this.url.searchParams.set('_sort', id);
     this.url.searchParams.set('_order', order);
     this.url.searchParams.set('_start', start);
     this.url.searchParams.set('_end', end);
+    if (this.filter) {
+      for (const key of Object.keys(this.filter)) {
+        this.url.searchParams.set(key, this.filter[key]);
+      }
+    }
 
     this.element.classList.add('sortable-table_loading');
 
@@ -120,6 +139,11 @@ export default class SortableTable {
 
   addRows(data) {
     this.data = data;
+    if (this.data.length) {
+      this.element.classList.remove('sortable-table_empty');
+    } else {
+      this.element.classList.add('sortable-table_empty');
+    }
 
     this.subElements.body.innerHTML = this.getTableRows(data);
   }
@@ -202,9 +226,7 @@ export default class SortableTable {
 
         <div data-element="loading" class="loading-line sortable-table__loading-line"></div>
 
-        <div data-element="emptyPlaceholder" class="sortable-table__empty-placeholder">
-          No products
-        </div>
+        <div data-elem="emptyPlaceholder" class="sortable-table__empty-placeholder"><div>Нет данных</div></div>
       </div>`;
   }
 
@@ -228,6 +250,7 @@ export default class SortableTable {
   }
 
   renderRows(data) {
+    // console.log(data.length);
     if (data.length) {
       this.element.classList.remove('sortable-table_empty');
       this.addRows(data);

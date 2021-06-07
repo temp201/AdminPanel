@@ -6,12 +6,14 @@ export default class Page {
   components = {};
 
   constructor() {
-    this.productId = window.location.pathname.split('/').reverse()[0];
+    const paths = window.location.pathname.split('/').reverse();
+    if (paths.length && paths[0] && paths[0] !== 'add') {
+      this.productId = paths[0];
+    }
     this.render();
   }
 
   async render() {
-    console.log(this.productId);
     const element = document.createElement('div');
 
     this.form = new ProductForm(this.productId);

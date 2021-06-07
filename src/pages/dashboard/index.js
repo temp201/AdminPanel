@@ -30,9 +30,9 @@ export default class Page {
 
   async updateChartsComponents (from, to) {
     const [ordersData, salesData, customersData] = await this.getDataForColumnCharts(from, to);
-    const ordersDataTotal = ordersData.reduce((accum, item) => accum + item);
-    const salesDataTotal = salesData.reduce((accum, item) => accum + item);
-    const customersDataTotal = customersData.reduce((accum, item) => accum + item);
+    const ordersDataTotal = ordersData.reduce((accum, item) => accum + item, 0);
+    const salesDataTotal = salesData.reduce((accum, item) => accum + item, 0);
+    const customersDataTotal = customersData.reduce((accum, item) => accum + item, 0);
 
     this.components.ordersChart.update({headerData: ordersDataTotal, bodyData: ordersData});
     this.components.salesChart.update({headerData: '$' + salesDataTotal, bodyData: salesData});
@@ -146,13 +146,6 @@ export default class Page {
       this.updateTableComponent(from, to);
     });
     // document.addEventListener('click', this.handleClick);
-  }
-
-  handleClick = (event) => {
-    const element = event.target.closest('.sortable-table__row');
-    if (element) {
-      console.log(element);
-    }
   }
 
   destroy () {
