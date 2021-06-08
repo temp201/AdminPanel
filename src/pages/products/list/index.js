@@ -58,7 +58,7 @@ export default class Page {
       price_lte: this.maxPrice,
     };
 
-    const table = new SortableTable(header, {url: '/api/rest/products', filter});
+    const table = new SortableTable(header, {url: '/api/rest/products', filter, linkUrl: '/products/', linkId: 'id'});
     this.components.push(table);
     this.subElements.productsContainer.append(table.element);
 
