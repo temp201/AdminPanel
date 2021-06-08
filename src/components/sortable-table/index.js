@@ -83,7 +83,6 @@ export default class SortableTable {
     this.linkId = linkId;
     this.linkUrl = linkUrl;
     this.filter = filter;
-    console.log(this.period);
     this.render();
   }
 
